@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KnackLink | Login</title>
+    <title>KnackLink | Register</title>
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
@@ -26,13 +26,13 @@
             overflow: hidden;
         }
 
-        .login-wrapper {
+        .register-wrapper {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(15px);
             padding: 2.5rem;
             border-radius: 20px;
-            width: 380px;
+            width: 400px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease-in-out;
             animation: fadeIn 0.8s ease;
@@ -47,11 +47,6 @@
                 transform: translateY(0);
                 opacity: 1;
             }
-        }
-
-        .login-wrapper:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3);
         }
 
         .branding {
@@ -104,7 +99,7 @@
             background: #fff;
         }
 
-        .login-btn {
+        .register-btn {
             width: 100%;
             background: #2563eb;
             border: none;
@@ -114,11 +109,11 @@
             font-size: 16px;
             cursor: pointer;
             font-weight: 500;
-            margin-top: 5px;
+            margin-top: 10px;
             transition: background 0.3s ease, transform 0.2s ease;
         }
 
-        .login-btn:hover {
+        .register-btn:hover {
             background: #1e40af;
             transform: scale(1.03);
         }
@@ -148,37 +143,59 @@
             border-radius: 8px;
             margin-bottom: 1rem;
         }
+
+        .success-message {
+            text-align: center;
+            color: #10b981;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
 
-    <div class="login-wrapper">
-        <div class="branding">
-            <img src="{% static 'images/logo.png' %}" alt="KnackLink Logo">
-            <h3>Welcome to KnackLink</h3>
-        </div>
-
-        <h2>Login to Your Account</h2>
-
-        {% if error %}
-            <div class="error-message">{{ error }}</div>
-        {% endif %}
-
-        <form method="POST">
-            {% csrf_token %}
-            <div class="form-group">
-                <input type="text" name="username" placeholder="Username" required autofocus>
-            </div>
-            <div class="form-group">
-                <input type="password" name="password" placeholder="Password" required>
-            </div>
-            <button class="login-btn" type="submit">Login</button>
-        </form>
-
-        <div class="extra-links">
-            <p>Don't have an account? <a href="{% url 'register' %}">Create one</a></p>
-        </div>
+<div class="register-wrapper">
+    <div class="branding">
+        <img src="{% static 'images/logo.png' %}" alt="KnackLink Logo">
+        <h3>Welcome to KnackLink</h3>
     </div>
+
+    <h2>Create Your Account</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="error-message">{{ message }}</div>
+            {% else %}
+                <div class="success-message">{{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" name="username" placeholder="Username" required>
+        </div>
+        <div class="form-group">
+            <input type="email" name="email" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+            <input type="password" name="password1" placeholder="Password" required>
+        </div>
+        <div class="form-group">
+            <input type="password" name="password2" placeholder="Confirm Password" required>
+        </div>
+
+        <button class="register-btn" type="submit">Register</button>
+    </form>
+
+    <div class="extra-links">
+        <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+    </div>
+</div>
 
 </body>
 </html>

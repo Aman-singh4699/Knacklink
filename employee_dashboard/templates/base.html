@@ -1,24 +1,225 @@
-{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>UserTime Dashboard</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KnackLink{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #1e40af;
+            --accent: #facc15;
+            --text-light: #f8fafc;
+            --glass: rgba(255,255,255,0.1);
+            --blur: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            min-height: 100vh;
+            color: var(--text-light);
+            background: radial-gradient(circle at 10% 20%, #0f172a, #1e3a8a 70%);
+            overflow-x: hidden;
+        }
+
+        /* ============ NAVBAR ============ */
+        nav {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2.5rem;
+            background: rgba(30, 58, 138, 0.8);
+            backdrop-filter: blur(var(--blur));
+            box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #facc15, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            padding: 8px 14px;
+            border-radius: 8px;
+        }
+
+        nav ul li a:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+            color: var(--accent);
+        }
+
+        /* ============ HERO BACKGROUND ANIMATION ============ */
+        .background-animate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, #3b82f6, transparent 40%),
+                        radial-gradient(circle at bottom right, #facc15, transparent 40%);
+            animation: moveBackground 8s infinite alternate ease-in-out;
+            z-index: -1;
+            opacity: 0.15;
+        }
+
+        @keyframes moveBackground {
+            from { transform: translate(0, 0); }
+            to { transform: translate(-30px, 30px); }
+        }
+
+        /* ============ MAIN CONTENT ============ */
+        main {
+            padding: 3rem 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(var(--blur));
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 900px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2, h3 {
+            background: linear-gradient(90deg, #60a5fa, #facc15);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ============ MESSAGES ============ */
+        .messages {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 8px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .alert-success { background: rgba(34,197,94,0.6); }
+        .alert-error { background: rgba(239,68,68,0.6); }
+
+        /* ============ FOOTER ============ */
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h2>UserTime Dashboard</h2>
-        {% if user.is_authenticated %}
-            <nav>
-                <a href="{% url 'dashboard' %}">Dashboard</a> |
-                <a href="{% url 'add_usertime' %}">Add Entry</a> |
-                <a href="{% url 'logout' %}">Logout</a>
-            </nav>
+
+    <div class="background-animate"></div>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav>
+        <div class="brand"><i class='bx bxs-bolt'></i> KnackLink</div>
+        <ul>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'dashboard' %}"><i class='bx bx-grid-alt'></i> Dashboard</a></li>
+                <li><a href="{% url 'add_usertime' %}"><i class='bx bx-plus-circle'></i> Add Entry</a></li>
+                <li><a href="{% url 'logout' %}"><i class='bx bx-log-out'></i> Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}"><i class='bx bx-log-in'></i> Login</a></li>
+                <li><a href="{% url 'register' %}"><i class='bx bx-user-plus'></i> Register</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <!-- ===== MESSAGES ===== -->
+    <div class="messages">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
         {% endif %}
-    </header>
-    <hr>
-    <div class="container">
-        {% block content %}{% endblock %}
     </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main>
+        <div class="glass-card">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        © {{ now|default:2025 }} <strong>KnackLink</strong> • Designed with 💙 for efficiency.
+        <br><a href="#">www.knacklink.com</a>
+    </footer>
+
 </body>
 </html>
