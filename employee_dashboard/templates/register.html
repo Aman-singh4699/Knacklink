@@ -4,16 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KnackLink | Register</title>
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Request Access | KnackLink</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
@@ -22,178 +16,123 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            color: #fff;
-            overflow: hidden;
+            color: white;
         }
 
-        .register-wrapper {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .auth-container {
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(15px);
-            padding: 2.5rem;
+            padding: 2rem 2.5rem;
             border-radius: 20px;
-            width: 400px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease-in-out;
-            animation: fadeIn 0.8s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .branding {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 380px;
             text-align: center;
-            margin-bottom: 25px;
+            animation: slideIn 0.8s ease;
         }
 
-        .branding img {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            box-shadow: 0 0 15px rgba(255,255,255,0.4);
-            margin-bottom: 10px;
-        }
-
-        .branding h3 {
-            font-weight: 500;
-            color: #e0e7ff;
-            font-size: 1.1rem;
-            letter-spacing: 0.5px;
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
-            text-align: center;
-            font-weight: 600;
-            font-size: 1.6rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 10px;
             color: #fff;
+            font-weight: 600;
+            font-size: 1.8rem;
         }
 
-        .form-group {
-            margin-bottom: 1rem;
-            position: relative;
+        p.subtitle {
+            color: #dbeafe;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
         }
 
-        .form-group input {
+        input, textarea {
             width: 100%;
-            padding: 12px 15px;
-            border: none;
+            padding: 12px;
+            margin: 8px 0;
             border-radius: 10px;
-            font-size: 15px;
-            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            font-size: 1rem;
             color: #333;
-            transition: 0.3s ease;
         }
 
-        .form-group input:focus {
+        textarea {
+            resize: none;
+        }
+
+        input:focus, textarea:focus {
             outline: none;
-            box-shadow: 0 0 6px #60a5fa;
+            box-shadow: 0 0 5px #60a5fa;
             background: #fff;
         }
 
-        .register-btn {
+        button {
             width: 100%;
+            padding: 12px;
             background: #2563eb;
             border: none;
-            color: white;
-            padding: 12px;
+            color: #fff;
+            font-size: 1rem;
             border-radius: 10px;
-            font-size: 16px;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
+            transition: 0.3s ease;
             margin-top: 10px;
-            transition: background 0.3s ease, transform 0.2s ease;
         }
 
-        .register-btn:hover {
+        button:hover {
             background: #1e40af;
-            transform: scale(1.03);
+            transform: scale(1.02);
         }
 
-        .extra-links {
-            text-align: center;
-            margin-top: 1.5rem;
+        .auth-links {
+            margin-top: 20px;
             font-size: 0.9rem;
         }
 
-        .extra-links a {
-            color: #bfdbfe;
+        .auth-links a {
+            color: #93c5fd;
             text-decoration: none;
-            transition: 0.3s;
         }
 
-        .extra-links a:hover {
-            color: #fff;
+        .auth-links a:hover {
             text-decoration: underline;
         }
 
-        .error-message {
-            text-align: center;
-            color: #f87171;
-            background: rgba(255, 255, 255, 0.1);
+        .message {
+            background: rgba(255,255,255,0.1);
             padding: 10px;
             border-radius: 8px;
             margin-bottom: 1rem;
-        }
-
-        .success-message {
-            text-align: center;
-            color: #10b981;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 1rem;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-<div class="register-wrapper">
-    <div class="branding">
-        <img src="{% static 'images/logo.png' %}" alt="KnackLink Logo">
-        <h3>Welcome to KnackLink</h3>
-    </div>
-
-    <h2>Create Your Account</h2>
+<div class="auth-container">
+    <h2>Request Access</h2>
+    <p class="subtitle">Submit your details to get access from KnackLink admin.</p>
 
     {% if messages %}
         {% for message in messages %}
-            {% if message.tags == 'error' %}
-                <div class="error-message">{{ message }}</div>
-            {% else %}
-                <div class="success-message">{{ message }}</div>
-            {% endif %}
+            <div class="message">{{ message }}</div>
         {% endfor %}
     {% endif %}
 
     <form method="POST">
         {% csrf_token %}
-        <div class="form-group">
-            <input type="text" name="username" placeholder="Username" required>
-        </div>
-        <div class="form-group">
-            <input type="email" name="email" placeholder="Email" required>
-        </div>
-        <div class="form-group">
-            <input type="password" name="password1" placeholder="Password" required>
-        </div>
-        <div class="form-group">
-            <input type="password" name="password2" placeholder="Confirm Password" required>
-        </div>
+        <input type="text" name="name" placeholder="Your Full Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <textarea name="message" placeholder="Optional Message (Department, Role, etc.)" rows="3"></textarea>
 
-        <button class="register-btn" type="submit">Register</button>
+        <button type="submit">Submit Request</button>
     </form>
 
-    <div class="extra-links">
-        <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+    <div class="auth-links">
+        <p>Already have access? <a href="{% url 'login' %}">Login</a></p>
     </div>
 </div>
 
