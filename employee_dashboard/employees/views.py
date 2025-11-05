@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from datetime import timedelta
@@ -7,6 +8,19 @@ from .forms import UserTimeForm
 
 from django.contrib.auth import logout
 from django.shortcuts import redirect
+
+def user_login(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user:
+            login(request, user)
+            return redirect('dashboard')  # keep as 'dashboard'
+        else:
+            return render(request, 'login.html', {'error': 'Invalid credentials'})
+    return render(request, 'login.html')
+
 
 @login_required
 def usertime_dashboard(request):
@@ -37,11 +51,12 @@ def add_usertime(request):
             entry.user = request.user
             entry.day_of_week = entry.date.strftime("%A")
             entry.save()
-            return redirect('usertime_dashboard')
+            return redirect('dashboard')  # changed from usertime_dashboard
     else:
         form = UserTimeForm()
     return render(request, 'usertime_form.html', {'form': form})
 
+
 def user_logout(request):
     logout(request)
-    return redirect('usertime_dashboard')
+    return redirect('login')

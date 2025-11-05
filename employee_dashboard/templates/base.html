@@ -7,10 +7,10 @@
 </head>
 <body>
     <header>
-        <h2>SOFIGENT - UserTime Dashboard</h2>
+        <h2>UserTime Dashboard</h2>
         {% if user.is_authenticated %}
             <nav>
-                <a href="{% url 'usertime_dashboard' %}">Dashboard</a> |
+                <a href="{% url 'dashboard' %}">Dashboard</a> |
                 <a href="{% url 'add_usertime' %}">Add Entry</a> |
                 <a href="{% url 'logout' %}">Logout</a>
             </nav>
