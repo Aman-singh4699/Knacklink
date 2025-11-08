@@ -1,12 +1,73 @@
 {% extends 'base.html' %}
-{% block title %}Dashboard{% endblock %}
+{% block title %}Dashboard | KnackLink{% endblock %}
 {% block content %}
 <style>
+    /* ===== FILTER FORM ===== */
+    .filter-form {
+        background: #f8fafc;
+        padding: 12px 18px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .filter-fields label {
+        font-weight: 500;
+        color: #1e293b;
+        margin-right: 4px;
+    }
+
+    .filter-fields input[type="date"] {
+        padding: 8px 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        background: white;
+        color: #1e293b;
+    }
+
+    .filter-btn {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: 0.3s ease;
+    }
+
+    .filter-btn:hover {
+        background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
+    }
+
+    .clear-btn {
+        background: #e2e8f0;
+        color: #1e293b;
+        text-decoration: none;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: background 0.3s ease;
+    }
+
+    .clear-btn:hover {
+        background: #cbd5e1;
+    }
+
+    /* ===== DASHBOARD HEADER ===== */
     .dashboard-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 25px;
+        flex-wrap: wrap;
+        gap: 10px;
     }
 
     .dashboard-header h3 {
@@ -20,6 +81,30 @@
         font-size: 0.95rem;
     }
 
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .action-btn {
+        display: inline-block;
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: white;
+        padding: 10px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .action-btn:hover {
+        background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
+        transform: translateY(-2px);
+    }
+
+    /* ===== STATS CARDS ===== */
     .stats-container {
         display: flex;
         gap: 20px;
@@ -44,19 +129,7 @@
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
     }
 
-    .stat-card h4 {
-        margin: 0;
-        font-size: 1rem;
-        font-weight: 500;
-        opacity: 0.9;
-    }
-
-    .stat-card p {
-        font-size: 1.8rem;
-        font-weight: 600;
-        margin-top: 8px;
-    }
-
+    /* ===== TABLE ===== */
     .table-wrapper {
         background: #fff;
         border-radius: 10px;
@@ -102,47 +175,104 @@
         color: #64748b;
     }
 
-    .add-entry-btn {
-        display: inline-block;
-        background: #2563eb;
-        color: white;
-        padding: 10px 16px;
-        border-radius: 8px;
+    .employee-name {
+        color: #2563eb;
         text-decoration: none;
         font-weight: 500;
-        margin-top: 10px;
-        transition: background 0.3s ease;
     }
 
-    .add-entry-btn:hover {
-        background: #1d4ed8;
-    }
-
-    @media (max-width: 768px) {
-        .stats-container {
-            flex-direction: column;
-        }
-
-        table {
-            font-size: 0.85rem;
-        }
-
-        th, td {
-            padding: 10px;
-        }
+    .employee-name:hover {
+        text-decoration: underline;
     }
 </style>
 
+{% if admin_view %}
+<!-- ===================== ADMIN EMPLOYEE LIST ===================== -->
 <div class="dashboard-header">
     <div>
-        <h3>Welcome, {{ user.username }}</h3>
-        <p>Week: <b>{{ week_start }}</b> - <b>{{ week_end }}</b></p>
-    </div>
-    <div>
-        <a href="{% url 'add_usertime' %}" class="add-entry-btn">+ Add Entry</a>
+        <h3>Admin Panel</h3>
+        <p>Welcome, {{ user.username }} — select an employee to view their timesheet.</p>
     </div>
 </div>
 
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Employee Name</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emp in employees %}
+            <tr>
+                <td>{{ emp.username }}</td>
+                <td>{{ emp.email }}</td>
+                <td>
+                    <a href="{% url 'admin_user_timesheet' emp.id %}" class="employee-name">View Timesheet →</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="no-records">No employees found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+<!-- ===================== USER OR ADMIN TIMESHEET VIEW ===================== -->
+<div class="dashboard-header">
+    <div>
+        {% if employee %}
+            <h3>{{ employee.username }}'s Timesheet</h3>
+        {% else %}
+            <h3>Welcome, {{ user.username }}</h3>
+        {% endif %}
+        <p>Showing data from <b>{{ week_start }}</b> to <b>{{ week_end }}</b></p>
+    </div>
+
+    <div class="header-actions">
+        <a href="{% url 'add_usertime' %}" class="action-btn">
+            <i class='bx bx-plus-circle'></i> Add Entry
+        </a>
+
+        {% if user.is_superuser and employee and employee != user %}
+            <a href="{% url 'export_employee_timesheet' employee.id %}" class="action-btn" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <i class='bx bx-download'></i> Export CSV
+            </a>
+        {% else %}
+            <a href="{% url 'export_self_timesheet' %}" class="action-btn" style="background: linear-gradient(135deg, #16a34a, #22c55e);">
+                <i class='bx bx-download'></i> Export My Timesheet
+            </a>
+        {% endif %}
+
+        {% if user.is_superuser %}
+            <a href="{% url 'admin_user_list' %}" class="action-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                <i class='bx bx-group'></i> Manage Employees
+            </a>
+            <a href="{% url 'delete_user_timesheet' %}" class="action-btn" style="background: linear-gradient(135deg, #ef4444, #b91c1c);">
+                <i class='bx bx-trash'></i> Delete Timesheet
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- ===== DATE FILTER ===== -->
+<form method="get" class="filter-form">
+    <div class="filter-fields">
+        <label>From:</label>
+        <input type="date" name="start_date" value="{{ week_start|date:'Y-m-d' }}">
+        <label>To:</label>
+        <input type="date" name="end_date" value="{{ week_end|date:'Y-m-d' }}">
+        <button type="submit" class="filter-btn">Apply</button>
+        {% if filter_active %}
+            <a href="{% url 'dashboard' %}" class="clear-btn">Clear</a>
+        {% endif %}
+    </div>
+</form>
+
+<!-- ===== STATS ===== -->
 <div class="stats-container">
     <div class="stat-card">
         <h4>Total Hours</h4>
@@ -154,6 +284,7 @@
     </div>
 </div>
 
+<!-- ===== TABLE ===== -->
 <div class="table-wrapper">
     <table>
         <thead>
@@ -180,10 +311,11 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="7" class="no-records">No records found for this week.</td>
+                <td colspan="7" class="no-records">No records found for this date range.</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+{% endif %}
 {% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Delete Timesheet | KnackLink{% endblock %}
+{% block content %}
+<style>
+    .delete-container {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        max-width: 500px;
+        margin: auto;
+        text-align: center;
+    }
+
+    h2 {
+        color: #dc2626;
+        margin-bottom: 15px;
+    }
+
+    select, input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-size: 1rem;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        color: #fff;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-delete:hover {
+        background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+        transform: scale(1.02);
+    }
+
+    .cancel-btn {
+        display: inline-block;
+        margin-top: 12px;
+        text-decoration: none;
+        color: #2563eb;
+        font-weight: 500;
+    }
+
+    .cancel-btn:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="delete-container">
+    <h2>🗑 Delete Timesheet Entries</h2>
+    <p>Select an employee and confirm your admin password to delete all their timesheet entries.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <select name="user_id" required>
+            <option value="">-- Select Employee --</option>
+            {% for user in users %}
+                <option value="{{ user.id }}">{{ user.username }} ({{ user.email }})</option>
+            {% endfor %}
+        </select>
+
+        <input type="password" name="password" placeholder="Enter your admin password" required>
+
+        <button type="submit" class="btn-delete">Delete Timesheet</button>
+    </form>
+
+    <a href="{% url 'admin_user_list' %}" class="cancel-btn">← Back to Admin Dashboard</a>
+</div>
+{% endblock %}
