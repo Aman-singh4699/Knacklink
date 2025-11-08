@@ -200,49 +200,84 @@
         }
 
         /* ============ FOOTER ============ */
-        footer {
-            text-align: center;
-            padding: 1.8rem;
-            font-size: 0.9rem;
-            color: rgba(255,255,255,0.7);
-            letter-spacing: 0.3px;
-            background: rgba(15,23,42,0.6);
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
+     /* ===== Sticky Footer Fix ===== */
+html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
 
-        footer a {
-            color: var(--accent);
-            text-decoration: none;
-        }
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* keep dashboard cards at top */
+    padding: 3rem 2rem;
+}
 
-        footer a:hover {
-            text-decoration: underline;
-        }
+/* Footer always stays at bottom */
+footer {
+    margin-top: auto;
+    text-align: center;
+    padding: 1.8rem;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.3px;
+    background: rgba(15,23,42,0.6);
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
     </style>
 </head>
 <body>
 
-    <div class="background-animate"></div>
+   <div class="background-animate"></div>
 
-    <!-- ===== NAVBAR ===== -->
-    <nav>
-        <div class="brand" onclick="window.location.href='/'">
-            <i class='bx bxs-bolt'></i> KnackLink
-        </div>
+<!-- ===== NAVBAR ===== -->
+<nav>
+    <div class="brand" onclick="window.location.href='/'">
+        <i class='bx bxs-bolt'></i> KnackLink
+    </div>
 
-        <i class='bx bx-menu menu-toggle' id="menu-toggle"></i>
+    <i class='bx bx-menu menu-toggle' id="menu-toggle"></i>
 
-        <ul id="nav-menu">
-            {% if user.is_authenticated %}
-                <li><a href="{% url 'dashboard' %}" class="{% if request.path == '/dashboard/' %}active{% endif %}"><i class='bx bx-grid-alt'></i> Dashboard</a></li>
-                <li><a href="{% url 'add_usertime' %}" class="{% if request.path == '/dashboard/add/' %}active{% endif %}"><i class='bx bx-plus-circle'></i> Add Entry</a></li>
-                <li><a href="{% url 'logout' %}"><i class='bx bx-log-out'></i> Logout</a></li>
-            {% else %}
-                <li><a href="{% url 'login' %}" class="{% if request.path == '/login/' %}active{% endif %}"><i class='bx bx-log-in'></i> Login</a></li>
-                <li><a href="{% url 'register' %}" class="{% if request.path == '/register/' %}active{% endif %}"><i class='bx bx-user-plus'></i> Register</a></li>
+    <ul id="nav-menu">
+        {% if user.is_authenticated %}
+            <li>
+                <a href="{% url 'dashboard' %}" class="{% if request.path == '/dashboard/' %}active{% endif %}">
+                    <i class='bx bx-grid-alt'></i> Dashboard
+                </a>
+            </li>
+
+            {% if user.is_superuser %}
+            <li>
+                <a href="/admin/" target="_blank"
+                   style="background:#f1f5f9; color:#1e3a8a; font-weight:600; border-radius:8px; padding:6px 12px;">
+                    <i class='bx bx-cog'></i> Admin Panel
+                </a>
+            </li>
             {% endif %}
-        </ul>
-    </nav>
+
+            <li>
+                <a href="{% url 'logout' %}">
+                    <i class='bx bx-log-out'></i> Logout
+                </a>
+            </li>
+        {% else %}
+            <li>
+                <a href="{% url 'login' %}" class="{% if request.path == '/login/' %}active{% endif %}">
+                    <i class='bx bx-log-in'></i> Login
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'register' %}" class="{% if request.path == '/register/' %}active{% endif %}">
+                    <i class='bx bx-user-plus'></i> Register
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+
 
     <!-- ===== MESSAGES ===== -->
     <div class="messages">
@@ -262,10 +297,28 @@
     </main>
 
     <!-- ===== FOOTER ===== -->
-    <footer>
-        © {{ now|default:2025 }} <strong>KnackLink</strong> • Designed with 💙 for productivity and precision.
-        <br><a href="#">www.knacklink.com</a>
-    </footer>
+  <footer>
+    <p>
+        © {{ now|default:2025 }}
+        <strong>
+            <a href="https://knacklink.com" target="_blank" style="color:#facc15; text-decoration:none;">
+                KnackLink
+            </a>
+        </strong>
+        • Driving Change Together.
+    </p>
+
+    <p style="margin-top:6px;">
+        <a href="mailto:info@knacklink.com" style="color:#93c5fd; text-decoration:none;">
+            info@knacklink.com
+        </a>
+        &nbsp;|&nbsp;
+        <a href="tel:+491727582383" style="color:#93c5fd; text-decoration:none;">
+            +49 172 7582383
+        </a>
+    </p>
+</footer>
+
 
     <script>
         // ===== MOBILE NAV TOGGLE =====

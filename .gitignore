@@ -1,0 +1,58 @@
+# ======================
+# Django / Python setup
+# ======================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment folders
+venv/
+env/
+
+# Local SQLite database
+db.sqlite3
+
+# Django static & media files
+/static/
+/media/
+/staticfiles/
+/static_root/
+
+# Logs and debug output
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+
+# Environment & secrets
+.env
+.env.local
+*.env
+
+# ======================
+# IDE / Editor files
+# ======================
+.vscode/
+.idea/
+*.iml
+
+# ======================
+# OS generated files
+# ======================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ======================
+# Backup / temp / export files
+# ======================
+*.bak
+*.tmp
+*.swp
+*.csv
+*.xlsx
+*.xls
+~$*

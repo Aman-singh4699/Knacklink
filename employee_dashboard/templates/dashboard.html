@@ -1,197 +1,98 @@
 {% extends 'base.html' %}
+{% load custom_tags %}
 {% block title %}Dashboard | KnackLink{% endblock %}
 {% block content %}
 <style>
-    /* ===== FILTER FORM ===== */
-    .filter-form {
-        background: #f8fafc;
-        padding: 12px 18px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        gap: 10px;
-        flex-wrap: wrap;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
+/* ====== GENERAL STYLING ====== */
+.container-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+.top-row { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+.filter-form { display:flex; gap:10px; align-items:center; margin: 15px 0; flex-wrap:wrap; }
+.filter-form input[type="date"] { padding:8px; border-radius:8px; border:1px solid #e2e8f0; }
+.btn { padding:8px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:600; }
+.btn-primary { background:linear-gradient(135deg,#2563eb,#1d4ed8); color:#fff; }
+.btn-ghost { background:#f1f5f9; color:#0f172a; text-decoration:none; display:inline-block; }
+.btn-ghost:hover { background:#e2e8f0; }
+.table-wrapper {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+    overflow-x: auto;
+    margin-top: 10px;
+}
 
-    .filter-fields label {
-        font-weight: 500;
-        color: #1e293b;
-        margin-right: 4px;
-    }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
 
-    .filter-fields input[type="date"] {
-        padding: 8px 10px;
-        border: 1px solid #cbd5e1;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        background: white;
-        color: #1e293b;
-    }
+th, td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #e2e8f0;
+}
 
-    .filter-btn {
-        background: linear-gradient(135deg, #2563eb, #1e40af);
-        color: white;
-        border: none;
-        padding: 8px 14px;
-        border-radius: 8px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: 0.3s ease;
-    }
+th {
+    background-color: #1e3a8a;
+    color: white;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
-    .filter-btn:hover {
-        background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
-    }
+td {
+    color: #1e293b;
+    background-color: #ffffff;
+}
 
-    .clear-btn {
-        background: #e2e8f0;
-        color: #1e293b;
-        text-decoration: none;
-        padding: 8px 14px;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: background 0.3s ease;
-    }
+tr:nth-child(even) td { background-color: #f8fafc; }
+tr:hover td { background-color: #e0f2fe; }
 
-    .clear-btn:hover {
-        background: #cbd5e1;
-    }
+.input-hours {
+    width: 100px;
+    padding: 6px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    text-align: center;
+    color: #0f172a;
+    background: #fff;
+}
 
-    /* ===== DASHBOARD HEADER ===== */
-    .dashboard-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 25px;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
+.actions { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.small-note { color:#64748b; font-size:0.95rem; margin-top:4px; }
 
-    .dashboard-header h3 {
-        color: #1e293b;
-        font-size: 1.5rem;
-        font-weight: 600;
-    }
-
-    .dashboard-header p {
-        color: #64748b;
-        font-size: 0.95rem;
-    }
-
-    .header-actions {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .action-btn {
-        display: inline-block;
-        background: linear-gradient(135deg, #2563eb, #1e40af);
-        color: white;
-        padding: 10px 16px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .action-btn:hover {
-        background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
-        transform: translateY(-2px);
-    }
-
-    /* ===== STATS CARDS ===== */
-    .stats-container {
-        display: flex;
-        gap: 20px;
-        margin-bottom: 25px;
-        flex-wrap: wrap;
-    }
-
-    .stat-card {
-        flex: 1;
-        min-width: 220px;
-        background: linear-gradient(135deg, #2563eb, #3b82f6);
-        color: #fff;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s ease, box-shadow 0.3s ease;
-        text-align: center;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-    }
-
-    /* ===== TABLE ===== */
-    .table-wrapper {
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
-        overflow-x: auto;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.95rem;
-    }
-
-    th, td {
-        padding: 12px 15px;
-        text-align: left;
-    }
-
-    th {
-        background-color: #1e3a8a;
-        color: white;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    tr:nth-child(even) {
-        background-color: #f9fafb;
-    }
-
-    tr:hover {
-        background-color: #e0f2fe;
-        transition: 0.2s;
-    }
-
-    td {
-        color: #334155;
-    }
-
-    .no-records {
-        text-align: center;
-        padding: 20px;
-        color: #64748b;
-    }
-
-    .employee-name {
-        color: #2563eb;
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-    .employee-name:hover {
-        text-decoration: underline;
-    }
+/* ===== TOAST ===== */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    animation: fadeInOut 2.5s ease forwards;
+    background: linear-gradient(135deg, #2563eb, #22c55e);
+}
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(10px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(10px); }
+}
 </style>
 
 {% if admin_view %}
-<!-- ===================== ADMIN EMPLOYEE LIST ===================== -->
+<!-- 👑 ADMIN EMPLOYEE LIST VIEW -->
 <div class="dashboard-header">
     <div>
         <h3>Admin Panel</h3>
-        <p>Welcome, {{ user.username }} — select an employee to view their timesheet.</p>
+        <p>Welcome, {{ user.username }} — select an employee to view or manage their timesheet.</p>
     </div>
 </div>
 
@@ -201,7 +102,7 @@
             <tr>
                 <th>Employee Name</th>
                 <th>Email</th>
-                <th>Action</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -209,8 +110,10 @@
             <tr>
                 <td>{{ emp.username }}</td>
                 <td>{{ emp.email }}</td>
-                <td>
-                    <a href="{% url 'admin_user_timesheet' emp.id %}" class="employee-name">View Timesheet →</a>
+                <td style="display:flex; justify-content:center; gap:8px;">
+                    <a href="{% url 'admin_user_timesheet' emp.id %}" class="btn btn-primary">
+                        View Timesheet
+                    </a>
                 </td>
             </tr>
             {% empty %}
@@ -221,101 +124,160 @@
 </div>
 
 {% else %}
-<!-- ===================== USER OR ADMIN TIMESHEET VIEW ===================== -->
-<div class="dashboard-header">
-    <div>
-        {% if employee %}
-            <h3>{{ employee.username }}'s Timesheet</h3>
-        {% else %}
-            <h3>Welcome, {{ user.username }}</h3>
-        {% endif %}
-        <p>Showing data from <b>{{ week_start }}</b> to <b>{{ week_end }}</b></p>
+<!-- 👩‍💼 USER DASHBOARD VIEW -->
+<div class="container-card">
+    <div class="top-row">
+        <div>
+            {% if employee %}
+                <h2 style="margin:0">{{ employee.username }}'s Timesheet</h2>
+            {% else %}
+                <h2 style="margin:0">Welcome, {{ user.username }}</h2>
+            {% endif %}
+            <div class="small-note">Showing: <strong>{{ start_date }}</strong> → <strong>{{ end_date }}</strong></div>
+        </div>
+
+        <div class="actions">
+            {% if user.is_superuser and employee %}
+    <a class="btn btn-ghost"
+       href="{% url 'export_employee_timesheet' employee.id %}?start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">
+       Export CSV
+    </a>
+{% else %}
+    <a class="btn btn-ghost"
+       href="{% url 'export_self_timesheet' %}?start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">
+       Export CSV
+    </a>
+{% endif %}
+
+            {% if user.is_superuser %}
+                <a class="btn btn-ghost" href="{% url 'admin_user_list' %}">Manage Employees</a>
+                <a class="btn btn-ghost" href="{% url 'delete_user_timesheet' %}">Delete Timesheet</a>
+            {% endif %}
+        </div>
     </div>
 
-    <div class="header-actions">
-        <a href="{% url 'add_usertime' %}" class="action-btn">
-            <i class='bx bx-plus-circle'></i> Add Entry
-        </a>
-
-        {% if user.is_superuser and employee and employee != user %}
-            <a href="{% url 'export_employee_timesheet' employee.id %}" class="action-btn" style="background: linear-gradient(135deg, #10b981, #059669);">
-                <i class='bx bx-download'></i> Export CSV
-            </a>
-        {% else %}
-            <a href="{% url 'export_self_timesheet' %}" class="action-btn" style="background: linear-gradient(135deg, #16a34a, #22c55e);">
-                <i class='bx bx-download'></i> Export My Timesheet
-            </a>
-        {% endif %}
-
-        {% if user.is_superuser %}
-            <a href="{% url 'admin_user_list' %}" class="action-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
-                <i class='bx bx-group'></i> Manage Employees
-            </a>
-            <a href="{% url 'delete_user_timesheet' %}" class="action-btn" style="background: linear-gradient(135deg, #ef4444, #b91c1c);">
-                <i class='bx bx-trash'></i> Delete Timesheet
-            </a>
-        {% endif %}
-    </div>
-</div>
-
-<!-- ===== DATE FILTER ===== -->
-<form method="get" class="filter-form">
-    <div class="filter-fields">
+    <!-- Date Filter -->
+    <form method="get" class="filter-form">
         <label>From:</label>
-        <input type="date" name="start_date" value="{{ week_start|date:'Y-m-d' }}">
+        <input type="date" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
         <label>To:</label>
-        <input type="date" name="end_date" value="{{ week_end|date:'Y-m-d' }}">
-        <button type="submit" class="filter-btn">Apply</button>
+        <input type="date" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
+        <button type="submit" class="btn btn-primary">Apply</button>
         {% if filter_active %}
-            <a href="{% url 'dashboard' %}" class="clear-btn">Clear</a>
+            <a href="{% if employee %}{% url 'admin_user_timesheet' employee.id %}{% else %}{% url 'dashboard' %}{% endif %}" class="btn btn-ghost">Clear</a>
         {% endif %}
-    </div>
-</form>
+    </form>
 
-<!-- ===== STATS ===== -->
-<div class="stats-container">
-    <div class="stat-card">
-        <h4>Total Hours</h4>
-        <p>{{ total_hours }}</p>
-    </div>
-    <div class="stat-card">
-        <h4>Average Hours</h4>
-        <p>{{ avg_hours }}</p>
-    </div>
+    <!-- Editable Timesheet -->
+    <form id="hoursForm" method="POST">
+        {% csrf_token %}
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Day</th>
+                        <th>Productive Hours</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in date_list %}
+                    <tr>
+                        <td>{{ d|date:"M j, Y" }}</td>
+                        <td>{{ d|date:"l" }}</td>
+                        <td>
+                            <input type="number" step="0.25" name="hours_{{ d|date:'Y-m-d' }}"
+                                value="{{ records|get_item:d|default:0 }}" class="input-hours" min="0">
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3">No dates found for this range.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="text-align:right; margin-top:10px;">
+            <button type="button" id="saveBtn" class="btn btn-primary">
+                <i class='bx bx-save'></i> Save
+            </button>
+        </div>
+    </form>
+
+    <div style="text-align:right; margin-top:15px; font-weight:600; font-size:1rem; color:#1e293b;">
+    Grand Total Hours:
+    <span id="totalHours" style="color:#2563eb;">
+        {{ total_hours|default:0 }}
+    </span>
 </div>
 
-<!-- ===== TABLE ===== -->
-<div class="table-wrapper">
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Day</th>
-                <th>Start</th>
-                <th>Finish</th>
-                <th>Prod Hours</th>
-                <th>Target</th>
-                <th>Comment</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for record in records %}
-            <tr>
-                <td>{{ record.date }}</td>
-                <td>{{ record.day_of_week }}</td>
-                <td>{{ record.start_time }}</td>
-                <td>{{ record.finish_time }}</td>
-                <td>{{ record.productive_hours }}</td>
-                <td>{{ record.target_hours }}</td>
-                <td>{{ record.comment }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7" class="no-records">No records found for this date range.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 </div>
+
+<!-- ================== JAVASCRIPT ================== -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const saveBtn = document.getElementById("saveBtn");
+    const form = document.getElementById("hoursForm");
+    const totalSpan = document.getElementById("totalHours");
+
+       function updateTotal() {
+        let total = 0;
+        form.querySelectorAll(".input-hours").forEach(i => {
+            total += parseFloat(i.value) || 0;
+        });
+        totalSpan.textContent = total.toFixed(2);
+    }
+
+    // ✅ Keep backend total visible on load
+    const initialTotal = parseFloat(totalSpan.textContent);
+    if (initialTotal && initialTotal > 0) {
+        totalSpan.textContent = initialTotal.toFixed(2);
+    } else {
+        updateTotal();
+    }
+
+
+    form.querySelectorAll(".input-hours").forEach(input => {
+        input.addEventListener("input", updateTotal);
+    });
+
+    saveBtn.addEventListener("click", async () => {
+        const formData = new FormData(form);
+        try {
+            const response = await fetch(window.location.href, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                const text = await response.text();
+                showToast("❌ Server error: " + text.slice(0, 60));
+                return;
+            }
+
+            const data = await response.json();
+            if (data.success) {
+                showToast(data.message || "✅ Saved successfully!");
+            } else {
+                showToast(data.error || "⚠️ Something went wrong.");
+            }
+        } catch (err) {
+            showToast("❌ Server unreachable.");
+        }
+    });
+
+    function showToast(msg) {
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+    }
+});
+</script>
 {% endif %}
 {% endblock %}
