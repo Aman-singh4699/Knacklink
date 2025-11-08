@@ -200,24 +200,33 @@
         }
 
         /* ============ FOOTER ============ */
-        footer {
-            text-align: center;
-            padding: 1.8rem;
-            font-size: 0.9rem;
-            color: rgba(255,255,255,0.7);
-            letter-spacing: 0.3px;
-            background: rgba(15,23,42,0.6);
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
+     /* ===== Sticky Footer Fix ===== */
+html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
 
-        footer a {
-            color: var(--accent);
-            text-decoration: none;
-        }
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* keep dashboard cards at top */
+    padding: 3rem 2rem;
+}
 
-        footer a:hover {
-            text-decoration: underline;
-        }
+/* Footer always stays at bottom */
+footer {
+    margin-top: auto;
+    text-align: center;
+    padding: 1.8rem;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.3px;
+    background: rgba(15,23,42,0.6);
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
     </style>
 </head>
 <body>
@@ -288,10 +297,28 @@
     </main>
 
     <!-- ===== FOOTER ===== -->
-    <footer>
-        © {{ now|default:2025 }} <strong>KnackLink</strong> • Designed with 💙 for productivity and precision.
-        <br><a href="#">www.knacklink.com</a>
-    </footer>
+  <footer>
+    <p>
+        © {{ now|default:2025 }}
+        <strong>
+            <a href="https://knacklink.com" target="_blank" style="color:#facc15; text-decoration:none;">
+                KnackLink
+            </a>
+        </strong>
+        • Driving Change Together.
+    </p>
+
+    <p style="margin-top:6px;">
+        <a href="mailto:info@knacklink.com" style="color:#93c5fd; text-decoration:none;">
+            info@knacklink.com
+        </a>
+        &nbsp;|&nbsp;
+        <a href="tel:+491727582383" style="color:#93c5fd; text-decoration:none;">
+            +49 172 7582383
+        </a>
+    </p>
+</footer>
+
 
     <script>
         // ===== MOBILE NAV TOGGLE =====
