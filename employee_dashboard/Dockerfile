@@ -1,26 +1,24 @@
-# Use a small Python image
+# Use official Python image
 FROM python:3.12-slim
 
-# Set working directory
+# Set work directory
 WORKDIR /app
 
-# Copy only requirements first for better caching
-COPY requirements.txt .
-
-# Install dependencies
+# Copy dependencies
+COPY ../requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the project
-COPY . .
+# Copy project
+COPY .. /app/
 
-# Set workdir to the Django project folder
+# Move into Django project directory
 WORKDIR /app/employee_dashboard
 
-# 🧠 Prevent collectstatic from breaking at build time
-RUN python manage.py collectstatic --noinput || echo "Skipping collectstatic (no DB available yet)"
+# Collect static files safely
+RUN python manage.py collectstatic --noinput || true
 
-# Expose Django port
+# Expose port
 EXPOSE 8000
 
-# Start the Django app
+# ✅ Start Django using Gunicorn
 CMD ["gunicorn", "employee_dashboard.wsgi:application", "--bind", "0.0.0.0:8000"]
