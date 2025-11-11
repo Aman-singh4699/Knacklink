@@ -4,20 +4,22 @@ FROM python:3.12-slim
 # Set work directory
 WORKDIR /app
 
-# Copy requirements
+# Copy dependencies
 COPY requirements.txt .
+
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project
+# Copy all project files
 COPY . /app/
 
-# Move into Django project directory
+# Set working directory to where manage.py lives
 WORKDIR /app/employee_dashboard
 
-# Collect static files safely
-RUN python manage.py collectstatic --noinput || true
+# Collect static files
+RUN python manage.py collectstatic --noinput
 
-# Expose port
+# Expose port for Railway
 EXPOSE 8000
 
 # Start Django using Gunicorn
