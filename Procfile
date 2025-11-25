@@ -1,1 +1,1 @@
-web: gunicorn employee_dashboard.wsgi
+web: gunicorn employee_dashboard.employee_dashboard.wsgi
